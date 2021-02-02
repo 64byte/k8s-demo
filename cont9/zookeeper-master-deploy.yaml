@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-main
+  labels:
+    app: zookeeper
+spec:
+  selector:
+    matchLabels:
+      app: zookeeper
+      role: main
+      tier: backend
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: zookeeper
+          role: main
+          tier: backend
+      spec:
+        containers:
+        - name: main
+          image: zookeeper
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            ports: 2181
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-main
+  labels:
+    app: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+      role: main
+      tier: backend
+    replicas: 1
+    template:
+      labels:
+        app: kafka
+        role: main
+        tier: backend
+    spec:
+      containers:
+      - name: main
+        image: wurstmeister/kafka:2.13-2.7.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          ports: 9092
+        env:
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: sdf
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+---
