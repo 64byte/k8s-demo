@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-minor
+  labels:
+    app: zookeeper
+spec:
+  selector:
+    matchLabels:
+      app: zookeeper
+      role: minor
+      tier: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+        role: minor
+        tier: backend
+    spec:
+      containers:
+      - name: minor
+        image: zookeeper
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        prots:
+        - containerPort: 2181
