@@ -12,21 +12,8 @@ spec:
     tier: frontend
   type: LoadBalancer
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wp-pv-claim
-  labels:
-    app: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
----
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: wordpress
   labels:
@@ -36,8 +23,8 @@ spec:
     matchLabels:
       app: wordpress
       tier: frontend
-  strategy:
-    type: Recreate
+  serviceName: "wordpress-front"
+  replicas: 3
   template:
     metadata:
       labels:
@@ -61,7 +48,11 @@ spec:
         volumeMounts:
           - name: wordpress-persistent-storage
             mountPath: /var/www/html
-      volumes:
-        - name: wordpress-persistent-storage
-          persistentVolumeClaim:
-            claimName: wp-pv-claim
+  volumeClaimTemplates:
+    - metadata:
+        name: wordpress-persistent-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Mi
