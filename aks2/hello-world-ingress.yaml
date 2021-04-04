@@ -1,6 +1,81 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
+  name: hello-world-ingress-front
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - blog.story8byte.xyz
+    - www.story8byte.xyz
+    - api.story8byte.xyz
+    secretName: tls-secret
+  rules:
+  - host: blog.story8byte.xyz
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: blog-frontend
+          servicePort: 80
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hello-world-ingress-css
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /css/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - blog.story8byte.xyz
+    - www.story8byte.xyz
+    - api.story8byte.xyz
+    secretName: tls-secret
+  rules:
+  - host: blog.story8byte.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: blog-frontend
+          servicePort: 80
+        path: /css(/|$)(.*)
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hello-world-ingress-js
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /js/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - blog.story8byte.xyz
+    - www.story8byte.xyz
+    - api.story8byte.xyz
+    secretName: tls-secret
+  rules:
+  - host: blog.story8byte.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: blog-frontend
+          servicePort: 80
+        path: /js(/|$)(.*)
+---       
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
   name: hello-world-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -10,10 +85,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - hello-world-ingress.5946a3d559a5478b9b1b.koreacentral.aksapp.io
+    - blog.story8byte.xyz
+    - www.story8byte.xyz
+    - api.story8byte.xyz
     secretName: tls-secret
   rules:
-  - host: hello-world-ingress.5946a3d559a5478b9b1b.koreacentral.aksapp.io
+  - host: www.story8byte.xyz
     http:
       paths:
       - backend:
@@ -41,13 +118,40 @@ metadata:
 spec:
   tls:
   - hosts:
-    - hello-world-ingress.5946a3d559a5478b9b1b.koreacentral.aksapp.io
+    - blog.story8byte.xyz
+    - www.story8byte.xyz
+    - api.story8byte.xyz
     secretName: tls-secret
   rules:
-  - host: hello-world-ingress.5946a3d559a5478b9b1b.koreacentral.aksapp.io
+  - host: www.story8byte.xyz
     http:
       paths:
       - backend:
           serviceName: aks-helloworld-one
           servicePort: 80
         path: /static(/|$)(.*)
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hello-world-ingress-backend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - blog.story8byte.xyz
+    - www.story8byte.xyz
+    - api.story8byte.xyz
+    secretName: tls-secret
+  rules:
+  - host: api.story8byte.xyz
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: blog-backend
+          servicePort: 80

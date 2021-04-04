@@ -1,13 +1,13 @@
-apiVersion: cert-manager.io/v1
+apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
-  name: letsencrypt
+  name: letsencrypt-2
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: segment12123@gmail.com
+    email: 1@1.net
     privateKeySecretRef:
-      name: letsencrypt
+      name: letsencrypt-2
     solvers:
     - http01:
         ingress:
